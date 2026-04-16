@@ -1,0 +1,43 @@
+name: build and publish
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: write
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Node.js
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
+        with:
+          node-version-file: ".nvmrc"
+      - name: Install dependencies and lint
+        run: |
+          cd src
+          npm install
+      - name: Get Latest Release
+        id: get_latest_release
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const latestRelease = await github.rest.repos.getLatestRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            const latestTag = latestRelease.data.tag_name || 'v0.0.0';
+            const [major, minor, patch] = latestTag.replace(/^v/, '').split('.').map(Number);
+            const newTag = `v${major}.${minor + 1}.0`;
+            return newTag;
+
+      - name: Publish to GitHub Release
+        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
+        with:
+          artifacts: "src/*"
+          body: "Automated release of ${{ steps.get_latest_release.outputs.result }}"
+          tag: "${{ steps.get_latest_release.outputs.result }}"

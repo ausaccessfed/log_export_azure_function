@@ -1,0 +1,11 @@
+{
+    "name": "sentinel-idp-log-export-function",
+    "version": "1.0.0",
+    "private": true,
+    "main": "index.js",
+    "dependencies": {
+        "@azure/functions": "^4",
+        "@azure/data-tables": "^13",
+        "@azure/identity": "^3"
+    }
+}
