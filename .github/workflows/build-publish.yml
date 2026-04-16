@@ -27,6 +27,7 @@ jobs:
         id: get_latest_release
         run: |
           latestTag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Latest tag: $latestTag"
           latestTag=${latestTag#\"}
           latestTag=${latestTag%\"}
           latestTag=${latestTag#v}
