@@ -20,20 +20,13 @@ jobs:
         run: |
           cd src
           npm install
-      - name: Get Latest Release
+      - name: Get Latest Tag
         id: get_latest_release
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const latestRelease = await github.rest.repos.getLatestRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-            });
-            const latestTag = latestRelease.data.tag_name || 'v0.0.0';
-            const [major, minor, patch] = latestTag.replace(/^v/, '').split('.').map(Number);
-            const newTag = `v${major}.${minor + 1}.0`;
-            return newTag;
+        run: |
+          const latestTag = $(git describe --tags --abrev=0);
+          const [major, minor, patch] = latestTag.replace(/^v/, '').split('.').map(Number);
+          const newTag = `v${major}.${minor + 1}.0`;
+          echo "result=$newTag" >> $GITHUB_OUTPUT
 
       - name: zip dist
         run: zip -r dist.zip src/*
