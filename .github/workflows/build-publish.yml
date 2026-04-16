@@ -23,13 +23,21 @@ jobs:
         run: |
           cd src
           npm install
-      - name: Get Latest Tag
+      - name: Get Next Release Tag
         id: get_latest_release
         run: |
-          const latestTag = $(git describe --tags --abbrev=0);
-          const [major, minor, patch] = latestTag.replace(/^v/, '').split('.').map(Number);
-          const newTag = `v${major}.${minor + 1}.0`;
-          echo "result=$newTag" >> $GITHUB_OUTPUT
+          latestTag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          latestTag=${latestTag#\"}
+          latestTag=${latestTag%\"}
+          latestTag=${latestTag#v}
+
+          IFS='.' read -r major minor patch <<< "$latestTag"
+          major=${major:-0}
+          minor=${minor:-0}
+          patch=${patch:-0}
+
+          newTag="v${major}.$((minor + 1)).0"
+          echo "result=$newTag" >> "$GITHUB_OUTPUT"
 
       - name: zip dist
         run: zip -r dist.zip src/*
