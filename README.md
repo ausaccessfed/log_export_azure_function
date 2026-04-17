@@ -4,7 +4,7 @@ This is a source that can be provided straight to an azure function to be able t
 
 ## How to use
 
-Please see the tutorial found over at <https://tutorials.aaf.edu.au/TODO>
+Please see the tutorial found over at <https://tutorials.aaf.edu.au/exporting-identity-provider-logs/04-azure-function-implementation>
 
 ## How to build locally
 
