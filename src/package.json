@@ -6,6 +6,6 @@
     "dependencies": {
         "@azure/functions": "^4",
         "@azure/data-tables": "^13",
-        "@azure/identity": "^3"
+        "@azure/identity": "^4"
     }
 }
